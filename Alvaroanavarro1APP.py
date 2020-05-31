@@ -61,7 +61,6 @@ while True:
         #Album and track details
         albumID = []
         trackURIs = []
-        trackArt = []
 
         # Extract album data 
         artistID = artist['id']
@@ -72,7 +71,6 @@ while True:
         for albumNumber,item in enumerate(albumResults):
             print(str(albumNumber) + " - ALBUM "+ item['name'])
             albumID.append(item['id'])
-            albumArt = item['images'][0]['url']
         
         playListChoice = input("Deseas crear una lista con las canciones de un album?(Si/No): ")
         
@@ -82,10 +80,25 @@ while True:
             desiredAlbum = input("Cual album deseas?(Coloque el numero): ")
             desiredAlbum = int(desiredAlbum)
             playListAlbumID = albumID[desiredAlbum]
-            playListName = spotifyObject.album(playListAlbumID)
-            playListName = playListName['name']
+            playListData = spotifyObject.album(playListAlbumID)
+            playListName = playListData['name']
+            playListArt = playListData['images'][0]['url']
             newPlaylist = spotifyObject.user_playlist_create(username, playListName, public=True, description = "Canciones de album deseado")
-            #desiredTracks = spotifyObject.album_tracks()
+            newPlaylistId = newPlaylist['id']
+            print("Portada el Album seleccionado")
+            webbrowser.open(playListArt)
+
+            # Extract track data
+            desiredTracks = spotifyObject.album_tracks(playListAlbumID)
+            desiredTracks = desiredTracks['items']
+
+            for trackNumber, item in enumerate(desiredTracks):
+                print (str(trackNumber) + " - " + item['name'])
+                trackURIs.append(item['uri'])
+            
+            # 
+            spotifyObject.user_playlist_add_tracks(username, newPlaylistId, trackURIs, position=None)
+
 
         if playListChoice == "no":
 
