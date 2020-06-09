@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel='stylesheet' href="{{ url_for('static', filename='css/style.css') }}">
-    <title>Index</title>
 </head>
 
 <body>
     <img  src="{{ url_for('static', filename='img/spotify.png')}}" alt="">
-<h1 style='color:rgb(81, 206, 81)'>Bienvenido a la APP de Album-Playlist</h1>
-    <p>This is the index</p>
-    
-    <script src="{{ url_for('static', filename='js/app.js')}}"></script>
-
+    <h1 style='color:rgb(81, 206, 81)'>Welcome {{ displayName }} with {{ follower }} followers</h1>
+    <h1 style='color:rgb(81, 206, 81)'>Search for an artist or band:</h1>   
+    <form method="POST" action="/band">
+        <div class="form-group">
+        <input type="text" name="searchQuery">  
+        </div>
+        <input class="btn btn-primary" type="submit" value="submit">
+    </form>
 
 </body>
 

@@ -7,7 +7,8 @@ import spotipy.util as util
 import json.decoder as JSONDecodeError
 
 # Get the user name from terminal
-username = sys.argv[1]
+
+username = sys.argv[0]
 scope = 'playlist-modify-public'
 
 #spotify:user:9pc2up6llq5ki85nzcznf2sao
@@ -56,7 +57,8 @@ while True:
         print("Genres:")
         print(*artist['genres'], sep=', ')
 
-        webbrowser.open(artist['images'][0]['url'])
+        #webbrowser.open(artist['images'][0]['url'])
+        print(artist['images'][0]['url'])
 
         #Album and track details
         albumID = []
