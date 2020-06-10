@@ -4,9 +4,10 @@ import os
 import sys 
 import json
 import spotipy
-import webbrowser
 import spotipy.util as util
 import json.decoder as JSONDecodeError
+import numpy as np 
+import pandas as pd
 
 @app.route('/')
 def index():
@@ -59,15 +60,18 @@ def band():
 
         # Show Albums from the artist
         for item in albumResults:
-            albumID.append(item['id'])
+            albumID.append(item['name'])
+    
+        data = {'': albumID}
+        df = pd.DataFrame(data=data)
+        df = ', '.join(df)
         
-        albumID = zip(*albumID)
+        
 
     return render_template('public/band.html', artistName = artistName, artistFollowers = artistFollowers,
-                            artistGenres = artistGenres, artistImg = artistImg, albumID = albumID)
+                            artistGenres = artistGenres, artistImg = artistImg, df = df)
     
-    #else
-    return render_template('public/index.html')
+
 
 ##@app.route('/playlist', methods=['GET', 'POST'])
 #def playlist():
