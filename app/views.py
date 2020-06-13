@@ -12,6 +12,7 @@ import pandas as pd
 @app.route('/')
 def index():
     # Get the user name from terminal
+    global username
     username = sys.argv[0]
     scope = 'playlist-modify-public'
 
@@ -22,12 +23,16 @@ def index():
         os.remove(f".cache-{username}")
         token = util.prompt_for_user_token(username, scope)
 
+    print(username)
     # Create our spotifyObject
     global spotifyObject
     spotifyObject = spotipy.Spotify(auth=token)
 
     user = spotifyObject.current_user()
     # User details
+    global displayName
+    global follower
+
     displayName = user['display_name']
     follower = user['followers']['total']
 
@@ -39,7 +44,7 @@ def band():
     if request.method == 'POST':
         searchQuery = request.form['searchQuery']
 
-        # Get search from API
+         # Get search from API
         searchResults = spotifyObject.search(searchQuery,1,0,"artist")
 
         # Artist/Band details
@@ -51,6 +56,9 @@ def band():
         artistImg = artist['images'][0]['url']
 
         #Album details
+        global albumName
+        global albumID
+        albumName = []
         albumID = []
 
         # Extract album data 
@@ -60,25 +68,48 @@ def band():
 
         # Show Albums from the artist
         for item in albumResults:
-            albumID.append(item['name'])
-    
-        data = {'': albumID}
-        df = pd.DataFrame(data=data)
-        df = ', '.join(df)
+            albumName.append(item['name'])
+            albumID.append(item['id'])
         
+        albumName = ', '.join(albumName)
         
 
-    return render_template('public/band.html', artistName = artistName, artistFollowers = artistFollowers,
-                            artistGenres = artistGenres, artistImg = artistImg, df = df)
-    
+        return render_template('public/band.html', artistName = artistName, artistFollowers = artistFollowers,
+                                artistGenres = artistGenres, artistImg = artistImg, albumName = albumName )
+        
 
 
-##@app.route('/playlist', methods=['GET', 'POST'])
-#def playlist():
-#    if request.method == 'POST':
-#        playListChoice = request.form['playListChoice']
- #       if playListChoice == "yes":
+@app.route('/playlist', methods=['GET', 'POST'])
+def playlist():
+    if request.method == 'POST':
+        playListChoice = request.form['playListChoice']
 
-            
-#arreglar formato de presentación de albums
-#arreglar formato de pregunta sobre si desea un playlist (meni de seleccion)
+        position = albumName.index(playListChoice)
+        playListAlbumID = albumID[position]
+        playListData = spotifyObject.album(playListAlbumID)
+        playListName = playListData['name']
+        playListArt = playListData['images'][0]['url']
+        #newPlaylist = spotifyObject.user_playlist_create(username, playListName, public=True, description = "Canciones de album deseado")
+        #newPlaylistId = newPlaylist['id']
+
+        # Extract track data
+        desiredTracks = spotifyObject.album_tracks(playListAlbumID)
+        desiredTracks = desiredTracks['items']
+        trackURIs = []
+        trackNames = []
+
+        for item in desiredTracks:
+            trackNames.append(item['name'])
+            trackURIs.append(item['uri'])
+
+        trackNames = ', '.join(trackNames)
+        
+        
+        #Create the playlist 
+        #spotifyObject.user_playlist_add_tracks(username, newPlaylistId, trackURIs, position=None)
+        
+        return render_template('public/playlist.html', playListName = playListName, playListArt = playListArt, trackNames = trackNames)
+
+        
+
+

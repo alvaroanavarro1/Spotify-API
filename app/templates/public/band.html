@@ -15,14 +15,20 @@
     <h3 style='color:rgb(81, 206, 81)' >Genres: {{artistGenres}}. </h3>  
         <img src='{{artistImg}}' alt="">
         <h2 style='color:rgb(81, 206, 81)'>Albums:</h2>
-        <h3 style='color:rgb(81, 206, 81)'>{{df}}</h3>
-        <h3 style='color:rgb(81, 206, 81)'>Do you want to make a playlist?</h3>  
+        <h3 style='color:rgb(81, 206, 81)'>{{albumName}}</h3>
+        <h3 style='color:rgb(81, 206, 81)'>Which album do you want?</h3>  
         <form method="POST" action="/playlist">
             <div class="form-group">
             <input type="text" name="playListChoice">  
             </div>
             <input class="btn btn-primary" type="submit" value="submit">
+            <button class="btn btn-secondary" type="button" name="SearchAgain" value="Search Again" onclick="goBack()">Return</button>
         </form>
+    <script>
+        function goBack(){
+            window.location.replace('http://localhost:5000/')
+        }
+    </script>
  
 </body>
 
